@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Incidents</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 30px;
+            background: #f4f6f9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .low { background: green; }
+        .high { background: orange; }
+        .critical { background: red; }
+
+        .status-open { background: blue; }
+        .status-acknowledged { background: purple; }
+        .status-resolved { background: darkgreen; }
+
+        .back-btn {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/" class="back-btn">← Back to Dashboard</a>
+
+<h2>All Incidents</h2>
+
+<table>
+<tr>
+    <th>ID</th>
+    <th>Severity</th>
+    <th>Status</th>
+    <th>Stress</th>
+    <th>Created</th>
+</tr>
+
+{% for incident in incidents %}
+<tr>
+    <td>{{ incident.id }}</td>
+    <td>
+        <span class="badge {{ incident.severity|lower }}">
+            {{ incident.severity }}
+        </span>
+    </td>
+    <td>
+        <span class="badge status-{{ incident.status|lower }}">
+            {{ incident.status }}
+        </span>
+    </td>
+    <td>{{ incident.stress_score }}</td>
+    <td>{{ incident.created_at }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

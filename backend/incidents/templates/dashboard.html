@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Incident Control Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:220px;
+background:#020617;
+padding:30px 15px;
+height:150vh;
+border-right:1px solid rgba(255,255,255,0.06);
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+.sidebar a{
+display:block;
+padding:10px 12px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:6px;
+}
+
+.sidebar a:hover{
+background:#1e293b;
+color:white;
+}
+
+/* MAIN CONTENT */
+.main{
+flex:1;
+padding:30px;
+}
+
+/* ⭐ Banner upgraded */
+.banner{
+padding:14px;
+border-radius:10px;
+background:#334155;
+margin-bottom:25px;
+text-align:center;
+font-size:18px;
+font-weight:600;
+letter-spacing:.3px;
+}
+
+/* ⭐ System overview clean block */
+.overview{
+margin-bottom:25px;
+}
+
+.overview h3{
+margin-bottom:8px;
+}
+
+.overview p{
+color:#cbd5f5;
+margin:4px 0;
+}
+
+/* Glass Card (used only where needed) */
+.card {
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.06);
+    padding: 22px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px; text-align: left; }
+th { color: #94a3b8; }
+tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+/* ⭐ BADGES MATCHED WITH TABLE THEME */
+.badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+
+.low { background:#1e40af; }
+.high { background:#1e40af; }
+.critical { background:#1e40af; }
+
+.status-open { background:#3b82f6; }
+.status-acknowledged { background:#6366f1; }
+.status-resolved { background:#334155; }
+
+/* Buttons */
+.ack-btn {
+    background: #3b82f6;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+}
+.resolve-btn {
+    background: #334155;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+}
+
+/* Chart */
+.chart-container {
+    width: 260px;
+    margin: auto;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div class="logo">PulseWatch</div>
+<a href="/incidents/">Incidents</a>
+<a href="/api/incident/">API</a>
+<a href="/api/metrics/">Metrics</a>
+<a href="/health/">Health</a>
+<a href="/admin/">Admin</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+{% if escalation_active %}
+<div class="banner">Escalation Active</div>
+{% else %}
+<div class="banner">System Stable</div>
+{% endif %}
+
+<!-- ⭐ Overview clean -->
+<div class="overview">
+<h3>System Overview</h3>
+<p>Total: {{ total_incidents }} | Open: {{ open_incidents }} | Critical 24h: {{ critical_last_24h }}</p>
+<p>MTTA: {{ mtta }} mins | MTTR: {{ mttr }} mins</p>
+</div>
+
+<!-- Chart -->
+<div class="card">
+<h3>Severity Distribution</h3>
+<div class="chart-container"><canvas id="severityChart"></canvas></div>
+</div>
+
+<!-- Table -->
+<div class="card">
+<h3>Recent Incidents</h3>
+<table>
+<tr>
+<th>ID</th><th>Severity</th><th>Status</th><th>Stress</th><th>Created</th><th>Action</th>
+</tr>
+
+{% for incident in recent_incidents %}
+<tr>
+<td>{{ incident.id }}</td>
+<td><span class="badge {{ incident.severity|lower }}">{{ incident.severity }}</span></td>
+<td><span class="badge status-{{ incident.status|lower }}">{{ incident.status }}</span></td>
+<td>{{ incident.stress_score }}</td>
+<td>{{ incident.created_at }}</td>
+<td>
+{% if incident.status != "RESOLVED" %}
+<button class="ack-btn" onclick="ackIncident({{ incident.id }})">ACK</button>
+<button class="resolve-btn" onclick="resolveIncident({{ incident.id }})">RESOLVE</button>
+{% else %}✔{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+</div>
+
+<script>
+function ackIncident(id){
+fetch(`/api/incident/${id}/ack/`,{method:"POST"}).then(()=>location.reload())
+}
+function resolveIncident(id){
+fetch(`/api/incident/${id}/resolve/`,{method:"POST"}).then(()=>location.reload())
+}
+
+new Chart(document.getElementById('severityChart'),{
+type:'doughnut',
+data:{
+labels:['LOW','HIGH','CRITICAL'],
+datasets:[{data:[{{ severity_counts.LOW }},{{ severity_counts.HIGH }},{{ severity_counts.CRITICAL }}]}]
+},
+options:{plugins:{legend:{position:'bottom'}}}
+});
+</script>
+
+</body>
+</html>
