@@ -1,52 +1,38 @@
-# 🚨 Autonomous Incident Governance Platform
+🚨 Autonomous Incident Governance Platform
 
-A backend-driven Incident Governance Platform designed to transform monitoring signals into severity-aware operational decisions with automated escalation detection, lifecycle governance, and real-time SRE metric tracking (MTTA/MTTR).
+A backend-driven Incident Governance Platform designed to transform monitoring signals into severity-aware operational decisions with automated escalation detection, lifecycle governance, and real-time SRE metric tracking (MTTA / MTTR).
 
----
+📌 Problem Statement
 
-## 📌 Problem Statement
-Modern monitoring systems generate excessive alerts without operational context, making it difficult for teams to prioritize incidents, detect escalation risk, and measure response efficiency.
+Modern monitoring systems generate excessive alerts without operational context, making it difficult for teams to:
 
----
+Prioritize incidents effectively
 
-## 🎯 Our Solution
+Detect escalation risk early
+
+Measure response efficiency
+
+🎯 Our Solution
+
 This platform introduces a governance layer that:
 
-- Processes incident signals via REST ingestion
-- Infers severity using stress-based logic
-- Detects escalation thresholds automatically
-- Tracks lifecycle states (OPEN → ACK → RESOLVED)
-- Computes operational KPIs like MTTA and MTTR
-- Provides a centralized incident command dashboard
+Processes incident signals via REST ingestion
 
----
+Infers severity using stress-based logic
 
-## 🏗️ System Architecture
+Detects escalation thresholds automatically
 
-```mermaid
-flowchart TD
+Tracks lifecycle states (OPEN → ACK → RESOLVED)
 
-A[Incident Simulator / Monitoring Agent]
---> B[REST Ingestion API]
+Computes operational KPIs like MTTA and MTTR
 
-B --> C[Orchestrator Engine]
+Provides a centralized incident command dashboard
 
-C --> D[Stress Engine]
-C --> E[Severity Engine]
-C --> F[Escalation Engine]
-C --> G[Action Engine]
+🏗️ System Architecture
 
-D --> H[Incident Database]
-E --> H
-F --> H
-G --> H
+👉 Ye diagram tumhara hi hai — bas thoda spacing polish kiya hai
 
-H --> I[Metrics Engine]
-I --> J[MTTA / MTTR Computation]
-
-H --> K[Dashboard UI]
-J --> K
-
+What is this?
 ✨ Key Features
 
 REST-based incident ingestion
@@ -94,7 +80,7 @@ Cloud-native deployment
 
 📊 Demo Flow
 
-Incident signal is generated via ingestion API
+Incident signal generated via ingestion API
 
 Decision engines infer severity and escalation risk
 
