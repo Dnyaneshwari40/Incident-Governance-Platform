@@ -30,24 +30,59 @@ Provides a centralized incident command dashboard
 
 🏗️ System Architecture
 
-👉 Ye diagram tumhara hi hai — bas thoda spacing polish kiya hai
+```mermaid
+flowchart TD
 
-What is this?
-✨ Key Features
+subgraph Signal Sources
+A[Incident Simulator]
+B[Monitoring Agent]
+end
 
-REST-based incident ingestion
+A --> C
+B --> C
 
-Stress-based severity inference engine
+subgraph Ingestion Layer
+C[REST Ingestion API]
+end
 
-Automated escalation detection
+subgraph Governance Core
+D[Orchestrator Engine]
+E[Stress Engine]
+F[Severity Engine]
+G[Escalation Engine]
+H[Action Engine]
+end
 
-Incident lifecycle governance
+C --> D
+D --> E
+D --> F
+D --> G
+D --> H
 
-MTTA / MTTR KPI tracking
+subgraph Persistence Layer
+I[(Incident Database)]
+end
 
-Severity distribution analytics
+E --> I
+F --> I
+G --> I
+H --> I
 
-Incident command dashboard
+subgraph Observability Layer
+J[Metrics Engine]
+K[MTTA / MTTR Computation]
+end
+
+I --> J
+J --> K
+
+subgraph Experience Layer
+L[Incident Command Dashboard]
+end
+
+I --> L
+K --> L
+```
 
 ⚡ Tech Stack
 
